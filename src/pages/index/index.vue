@@ -14,6 +14,12 @@
 				</swiper-item>
 			</swiper>
 		</view>
+		<!-- 导航栏 -->
+		<view class="nav_container">
+			<navigator :open-type="item.open_type" :url="item.navigator_url" v-for="item in navs" :key="item.name">
+				<image :src="item.image_src"></image>
+			</navigator>
+		</view>
 	</view>
 </template>
 
@@ -34,7 +40,8 @@
  * 		2.5.3 用循环渲染数据
  * 3、分类导航
  * 	2.1 布局
- * 	2.2 点击单个按钮要跳转到对应页面
+ *  2.2 获取远程数据，渲染
+ * 	2.3 点击单个按钮要跳转到对应页面
  * 4、楼层信息
  * 	2.1 布局
  * 	2.2 点击卡片跳转到响应链接
@@ -43,11 +50,13 @@
 export default {
   data() {
     return {
-		banner: [] // 页面轮播图数据
+		banner: [], // 页面轮播图数据
+		navs: [], // 导航数据
 	};
   },
   onLoad() {
 	  this.fetchBanner();
+	  this.fetchNav();
   },
   methods: {
 	//   获取轮播图数据
@@ -58,7 +67,25 @@ export default {
 				  this.banner = res.data.message;
 			  } 
 		  })
-	  }
+	  },
+	//   获取导航栏数据
+	fetchNav() {
+		  uni.request({
+			  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/catitems',
+			  success: (res) => {
+				  
+				//   "navigator_url": "/pages/category/main"
+				//  需要把navigator_url 改为 /pages/category/index
+				const data = res.data.message;
+				data.forEach(item => {
+					if (item.navigator_url) {
+						item.navigator_url = item.navigator_url.replace('main', 'index');
+					}
+				})
+				this.navs = data;
+			  } 
+		  })
+	}
   }
 };
 </script>
@@ -88,11 +115,23 @@ export default {
 .banner_container {
 	width: 100%;
 	height: 340rpx;
+	swiper {
+		height: 100%;
+	}
 	swiper-item {
 		height: 100%;
 		image {
 			width: 100%;
 		}
+	}
+}
+.nav_container {
+	display: flex;
+	justify-content: space-around;
+	margin: 12rpx 0 43rpx 0rpx;
+	image {
+		width: 128rpx;
+		height: 140rpx;
 	}
 }
 </style>
