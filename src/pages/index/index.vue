@@ -6,6 +6,14 @@
 				<text class="search_text">搜索</text>
 			</view>
 		</view>
+		<!-- 首页轮播图 -->
+		<view class="banner_container">
+			<swiper indicator-active-color="#EA4350" :autoplay="true" :circular="true" :indicator-dots="true">
+				<swiper-item v-for="item in banner" :key="item.goods_id">
+					<image mode="widthFix" :src="item.image_src"></image>
+				</swiper-item>
+			</swiper>
+		</view>
 	</view>
 </template>
 
@@ -16,10 +24,14 @@
  * 	1.1 布局
  * 	1.2 点击搜索栏需要跳转到搜索界面
  * 2、首页轮播图
- * 	2.1 按设计图进行布局
- * 	2.2 要实现自动轮播
- * 	2.3 轮播到最后一页自动跳转到第一页
- * 	2.4 指示器颜色需要按设计图颜色设置
+ * 	2.1 按设计图进行布局 √
+ * 	2.2 要实现自动轮播 autoplay √
+ * 	2.3 轮播到最后一页自动跳转到第一页 circular √
+ * 	2.4 指示器颜色需要按设计图颜色设置 indicator-dots √
+ *  2.5 根据后端返回数据渲染页面
+ * 		2.5.1 在onLoad生命周期请求数据
+ * 		2.5.2 把返回的数据放到data里
+ * 		2.5.3 用循环渲染数据
  * 3、分类导航
  * 	2.1 布局
  * 	2.2 点击单个按钮要跳转到对应页面
@@ -30,10 +42,24 @@
  */
 export default {
   data() {
-    return {};
+    return {
+		banner: [] // 页面轮播图数据
+	};
   },
-  onLoad() {},
-  methods: {}
+  onLoad() {
+	  this.fetchBanner();
+  },
+  methods: {
+	//   获取轮播图数据
+	  fetchBanner() {
+		  uni.request({
+			  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/swiperdata',
+			  success: (res) => {
+				  this.banner = res.data.message;
+			  } 
+		  })
+	  }
+  }
 };
 </script>
 
@@ -56,6 +82,16 @@ export default {
 		.search_text {
 			font-size: 32rpx;
 			color:#767676;
+		}
+	}
+}
+.banner_container {
+	width: 100%;
+	height: 340rpx;
+	swiper-item {
+		height: 100%;
+		image {
+			width: 100%;
 		}
 	}
 }
