@@ -73,7 +73,11 @@
  * 		第一种方法：使用navigator
  * 		第二种方法：使用API: uni.navigateTo({ url })
  * 7、下拉刷新
- * 
+ *    7.1 打开下拉刷新
+ *    7.2 在回调函数中重新请求数据
+ * 	  7.3 收回加载状态 uni.stopPullDownRefresh();
+ *    7.4 显示loading状态，uni.showLoading({ title })
+ * 	  7.5 隐藏loading状态 uni.hideLoading()
  */
 import http from '@/utils/http.js';
 
@@ -90,6 +94,17 @@ export default {
 	  this.fetchBanner();
 	  this.fetchNav();
 	  this.fetchFloor();
+  },
+  onPullDownRefresh() {
+	  console.log('页面被刷新')
+	  this.fetchBanner();
+	  this.fetchNav();
+	  this.fetchFloor();
+	  uni.showLoading({ title: '数据拼命加载中...'})
+	  setTimeout(() => {
+		  uni.hideLoading();
+	  }, 2000)
+	  // uni.stopPullDownRefresh();
   },
   mounted() {
 	  console.log('mounted')
