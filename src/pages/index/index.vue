@@ -2,8 +2,8 @@
 	<view class="container">
 		<!-- 搜索栏 -->
 		<view class="search_container">
-			<view class="search_input">
-				<text class="search_text">搜索12313</text>
+			<view class="search_input" @tap="jumpToSearchPage">
+				<text class="search_text">搜索</text>
 			</view>
 		</view>
 		<!-- 首页轮播图 -->
@@ -15,10 +15,13 @@
 			</swiper>
 		</view>
 		<!-- 导航栏 -->
-		<view class="nav_container">
+<!-- 		<view class="nav_container">
 			<navigator :open-type="item.open_type" :url="item.navigator_url" v-for="item in navs" :key="item.name">
 				<image :src="item.image_src"></image>
 			</navigator>
+		</view> -->
+		<view class="nav_container">
+			<image @tap="jumpToNavPage(item.navigator_url, item.open_type)" v-for="item in navs" :key="item.name" :src="item.image_src"></image>
 		</view>
 		<!-- 商品楼层 -->
 		<view class="floor_container">
@@ -52,22 +55,24 @@
  * 		2.5.2 把返回的数据放到data里
  * 		2.5.3 用循环渲染数据
  * 3、分类导航
- * 	2.1 布局 
- *  2.2 获取远程数据，渲染
- * 	2.3 点击单个按钮要跳转到对应页面
+ * 	3.1 布局 
+ *  3.2 获取远程数据，渲染
+ * 	3.3 点击单个按钮要跳转到对应页面
  * 4、楼层信息
- * 	2.1 布局，关键技术:通过浮动布局或者使用左右布局
- * 	2.2 请求数据、渲染数据（涉及到嵌套循环，第一层循环楼层、第二层循环商品信息）
- * 	2.2 点击卡片跳转到相应链接
- *  2.3 返回的导航url需要调整
+ * 	4.1 布局，关键技术:通过浮动布局或者使用左右布局
+ * 	4.2 请求数据、渲染数据（涉及到嵌套循环，第一层循环楼层、第二层循环商品信息）
+ * 	4.2 点击卡片跳转到相应链接
+ *  4.3 返回的导航url需要调整
  * 
  * 5、技术优化需求
  * 	5.1 封装网络请求工具
  * 		5.1.1 URL统一管理
  * 		5.1.2 满足不同的请求方式，GET POST
  * 		5.1.3 数据异常的时候，在网络层统一处理
- * http.get
- * http.post
+ * 6、页面跳转的两个方法
+ * 		第一种方法：使用navigator
+ * 		第二种方法：使用API: uni.navigateTo({ url })
+ * 7、下拉刷新
  * 
  */
 import http from '@/utils/http.js';
@@ -90,6 +95,29 @@ export default {
 	  console.log('mounted')
   },
   methods: {
+	  // 跳转到搜索页
+	  jumpToSearchPage() {
+		// 调用跳转API
+		uni.navigateTo({
+			url: '/pages/search/index'
+		})
+	  },
+	  jumpToNavPage(url, open_type) {
+		  if (open_type === 'switchTab') {
+			  uni.switchTab({
+			  	url
+			  })
+		  } else if (open_type === 'navigate') {
+			  uni.navigateTo({
+			  	url
+			  })
+		  } else {
+			  uni.redirectTo({
+			  	url
+			  })
+		  }
+
+	  },
 	//   获取轮播图数据
 	  fetchBanner() {
 		  // uni.request({
