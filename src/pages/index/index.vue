@@ -77,7 +77,7 @@
  *    7.2 在回调函数中重新请求数据
  * 	  7.3 收回加载状态 uni.stopPullDownRefresh();
  *    7.4 显示loading状态，uni.showLoading({ title })
- * 	  7.5 隐藏loading状态 uni.hideLoading()
+ * 	  7.5 隐藏loading状态 uni.hideLoading()  
  */
 import http from '@/utils/http.js';
 
@@ -103,7 +103,7 @@ export default {
 	  uni.showLoading({ title: '数据拼命加载中...'})
 	  setTimeout(() => {
 		  uni.hideLoading();
-	  }, 2000)
+	  }, 2000) 
 	  // uni.stopPullDownRefresh();
   },
   mounted() {
