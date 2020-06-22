@@ -9,7 +9,7 @@
 			}
 		},
 		onLoad() {
-
+			console.log('onLoad')
 		},
 		methods: {
 

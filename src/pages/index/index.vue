@@ -3,7 +3,7 @@
 		<!-- 搜索栏 -->
 		<view class="search_container">
 			<view class="search_input">
-				<text class="search_text">搜索</text>
+				<text class="search_text">搜索12313</text>
 			</view>
 		</view>
 		<!-- 首页轮播图 -->
@@ -19,6 +19,19 @@
 			<navigator :open-type="item.open_type" :url="item.navigator_url" v-for="item in navs" :key="item.name">
 				<image :src="item.image_src"></image>
 			</navigator>
+		</view>
+		<!-- 商品楼层 -->
+		<view class="floor_container">
+			<view class="floor" v-for="(floor, index) in floors" :key="index">
+				<view class="floor_title">
+					<image :src="floor.floor_title.image_src"></image>
+				</view>
+				<view class="floor_products">
+					<navigator class="product" :url="product.navigator_url" :open-type="product.open_type" v-for="(product, idx) in floor.product_list" :key="idx" >
+						<image :src="product.image_src"></image>
+					</navigator>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -39,54 +52,117 @@
  * 		2.5.2 把返回的数据放到data里
  * 		2.5.3 用循环渲染数据
  * 3、分类导航
- * 	2.1 布局
+ * 	2.1 布局 
  *  2.2 获取远程数据，渲染
  * 	2.3 点击单个按钮要跳转到对应页面
  * 4、楼层信息
- * 	2.1 布局
- * 	2.2 点击卡片跳转到响应链接
+ * 	2.1 布局，关键技术:通过浮动布局或者使用左右布局
+ * 	2.2 请求数据、渲染数据（涉及到嵌套循环，第一层循环楼层、第二层循环商品信息）
+ * 	2.2 点击卡片跳转到相应链接
+ *  2.3 返回的导航url需要调整
+ * 
+ * 5、技术优化需求
+ * 	5.1 封装网络请求工具
+ * 		5.1.1 URL统一管理
+ * 		5.1.2 满足不同的请求方式，GET POST
+ * 		5.1.3 数据异常的时候，在网络层统一处理
+ * http.get
+ * http.post
  * 
  */
+import http from '@/utils/http.js';
+
 export default {
   data() {
     return {
 		banner: [], // 页面轮播图数据
 		navs: [], // 导航数据
+		floors: [], // 楼层数据
 	};
   },
   onLoad() {
+	  console.log('onLoad')
 	  this.fetchBanner();
 	  this.fetchNav();
+	  this.fetchFloor();
+  },
+  mounted() {
+	  console.log('mounted')
   },
   methods: {
 	//   获取轮播图数据
 	  fetchBanner() {
-		  uni.request({
-			  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/swiperdata',
-			  success: (res) => {
-				  this.banner = res.data.message;
-			  } 
+		  // uni.request({
+			 //  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/swiperdata',
+			 //  success: (res) => {
+				//   this.banner = res.data.message;
+			 //  } 
+		  // })
+		  http.get('/home/swiperdata', {}, (data) => {
+			this.banner = data;
 		  })
 	  },
 	//   获取导航栏数据
 	fetchNav() {
-		  uni.request({
-			  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/catitems',
-			  success: (res) => {
+		  // uni.request({
+			 //  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/catitems',
+			 //  success: (res) => {
 				  
-				//   "navigator_url": "/pages/category/main"
-				//  需要把navigator_url 改为 /pages/category/index
-				const data = res.data.message;
+				// //   "navigator_url": "/pages/category/main"
+				// //  需要把navigator_url 改为 /pages/category/index
+				// const data = res.data.message;
+				// data.forEach(item => {
+				// 	if (item.navigator_url) {
+				// 		item.navigator_url = item.navigator_url.replace('main', 'index');
+				// 	}
+				// })
+				// this.navs = data;
+			 //  } 
+		  // })
+		  http.get('/home/catitems', {}, (data) => {
 				data.forEach(item => {
 					if (item.navigator_url) {
 						item.navigator_url = item.navigator_url.replace('main', 'index');
 					}
 				})
 				this.navs = data;
-			  } 
 		  })
+	},
+	// 获取楼层数据
+	fetchFloor() {
+		 //  uni.request({
+		 //  	url: "https://api-hmugo-web.itheima.net/api/public/v1/home/floordata",
+			// success: (res) => {
+			// 	const data = res.data.message;
+			// 	//   "navigator_url": "/pages/goods_list?query='内容'"
+			// 	//  需要把navigator_url 改为 /pages/goods_list/index?query='内容'
+			// 	// 注意，需要两层的循环
+			// 	// 第一层循环，获取单个楼层，第二层循环，获取商品
+			// 	data.forEach(floor => {
+			// 		// 第二层
+			// 		floor.product_list.forEach( product => {
+			// 			if (product.navigator_url) {
+			// 				product.navigator_url = product.navigator_url.replace('goods_list', 'goods_list/index');
+			// 			}
+			// 		})
+			// 	})
+			// 	// 把数据赋值给data
+			// 	this.floors = data;
+			// }
+		 //  })
+		 http.get('/home/floordata', {}, (data) => {
+			 	data.forEach(floor => {
+			 		floor.product_list.forEach( product => {
+			 			if (product.navigator_url) {
+			 				product.navigator_url = product.navigator_url.replace('goods_list', 'goods_list/index');
+			 			}
+			 		})
+			 	})
+			 	this.floors = data;
+		 })
 	}
-  }
+  },
+
 };
 </script>
 
@@ -132,6 +208,40 @@ export default {
 	image {
 		width: 128rpx;
 		height: 140rpx;
+	}
+}
+// 楼层样式
+.floor_container {
+	.floor {
+		.floor_title {
+			height: 59rpx;
+			image {
+				width: 100%;
+				height: 100%;
+			}
+		}
+		.floor_products {
+			height: 386rpx;
+			padding: 12rpx;
+			.product {
+				width: 233rpx;
+				height: 188rpx;
+				display: inline-block;
+				image {
+					width: 100%;
+					height: 100%;
+				}
+			}
+			.product:first-child {
+				width: 232rpx;
+				height: 100%;
+				float: left;
+				margin-right: 15rpx;
+			}
+			.product:nth-child(even) {
+				margin-right: 15rpx;
+			}
+		}
 	}
 }
 </style>
