@@ -78,6 +78,8 @@
  * 	  7.3 收回加载状态 uni.stopPullDownRefresh();
  *    7.4 显示loading状态，uni.showLoading({ title })
  * 	  7.5 隐藏loading状态 uni.hideLoading()  
+ * 8、使用async await 改造网络层
+ * 	 await Promise()
  */
 import http from '@/utils/http.js';
 
@@ -95,16 +97,15 @@ export default {
 	  this.fetchNav();
 	  this.fetchFloor();
   },
-  onPullDownRefresh() {
+  async onPullDownRefresh() {
 	  console.log('页面被刷新')
-	  this.fetchBanner();
-	  this.fetchNav();
-	  this.fetchFloor();
+	  // this.fetchBanner();
+	  // this.fetchNav();
+	  // this.fetchFloor();
 	  uni.showLoading({ title: '数据拼命加载中...'})
-	  setTimeout(() => {
-		  uni.hideLoading();
-	  }, 2000) 
-	  // uni.stopPullDownRefresh();
+	  await Promise.all([this.fetchBanner(), this.fetchNav(), this.fetchFloor()]);
+	  uni.hideLoading();
+	  uni.stopPullDownRefresh();
   },
   mounted() {
 	  console.log('mounted')
@@ -134,19 +135,21 @@ export default {
 
 	  },
 	//   获取轮播图数据
-	  fetchBanner() {
+	  async fetchBanner() {
 		  // uni.request({
 			 //  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/swiperdata',
 			 //  success: (res) => {
 				//   this.banner = res.data.message;
 			 //  } 
 		  // })
-		  http.get('/home/swiperdata', {}, (data) => {
-			this.banner = data;
-		  })
+		 //  http.get('/home/swiperdata', {}, (data) => {
+			// this.banner = data;
+		 //  })
+		  // http.get返回一个promise
+		   this.banner = await http.get('/home/swiperdata');
 	  },
 	//   获取导航栏数据
-	fetchNav() {
+	async fetchNav() {
 		  // uni.request({
 			 //  url: 'https://api-hmugo-web.itheima.net/api/public/v1/home/catitems',
 			 //  success: (res) => {
@@ -162,17 +165,24 @@ export default {
 				// this.navs = data;
 			 //  } 
 		  // })
-		  http.get('/home/catitems', {}, (data) => {
-				data.forEach(item => {
-					if (item.navigator_url) {
-						item.navigator_url = item.navigator_url.replace('main', 'index');
-					}
-				})
-				this.navs = data;
+		  // http.get('/home/catitems', {}, (data) => {
+				// data.forEach(item => {
+				// 	if (item.navigator_url) {
+				// 		item.navigator_url = item.navigator_url.replace('main', 'index');
+				// 	}
+				// })
+				// this.navs = data;
+		  // })
+		  const data = await http.get('/home/catitems');
+		  data.forEach(item => {
+		  	if (item.navigator_url) {
+		  		item.navigator_url = item.navigator_url.replace('main', 'index');
+		  	}
 		  })
+		  this.navs = data;
 	},
 	// 获取楼层数据
-	fetchFloor() {
+	async fetchFloor() {
 		 //  uni.request({
 		 //  	url: "https://api-hmugo-web.itheima.net/api/public/v1/home/floordata",
 			// success: (res) => {
@@ -193,16 +203,25 @@ export default {
 			// 	this.floors = data;
 			// }
 		 //  })
-		 http.get('/home/floordata', {}, (data) => {
-			 	data.forEach(floor => {
-			 		floor.product_list.forEach( product => {
-			 			if (product.navigator_url) {
-			 				product.navigator_url = product.navigator_url.replace('goods_list', 'goods_list/index');
-			 			}
-			 		})
-			 	})
-			 	this.floors = data;
+		 // http.get('/home/floordata', {}, (data) => {
+			//  	data.forEach(floor => {
+			//  		floor.product_list.forEach( product => {
+			//  			if (product.navigator_url) {
+			//  				product.navigator_url = product.navigator_url.replace('goods_list', 'goods_list/index');
+			//  			}
+			//  		})
+			//  	})
+			//  	this.floors = data;
+		 // })
+		 const data = await http.get('/home/floordata');
+		 data.forEach(floor => {
+		 	floor.product_list.forEach( product => {
+		 		if (product.navigator_url) {
+		 			product.navigator_url = product.navigator_url.replace('goods_list', 'goods_list/index');
+		 		}
+		 	})
 		 })
+		 this.floors = data;
 	}
   },
 

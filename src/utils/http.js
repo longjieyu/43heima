@@ -15,32 +15,36 @@ const BASE_URL = 'https://api-hmugo-web.itheima.net/api/public/v1';
  * data: 表示请求参数
  * success: 请求成功回调
  */
-const get = (url, data, success) => {
-	request(url, data, success, 'GET');
+const get = (url, data) => {
+	return request(url, data, 'GET');
 }
 
-const post = (url, data, success) => {
-	request(url, data, success, 'POST');
+const post = (url, data) => {
+	return request(url, data, 'POST');
 }
 
-const request = (url, data, success, method = 'GET') => {
-	uni.request({
-		url: BASE_URL + url,
-		data,
-		method,
-		success: (res) => {
-			// 异常逻辑的处理
-			if (res.data.meta.status !== 200) {
-				// toast提示
-				uni.showToast({
-					title: res.data.meta.msg,
-					icon: 'none'
-				})
-			} else {
-				success(res.data.message);
+const request = (url, data, method = 'GET') => {
+	return new Promise((reslove, reject) => {
+		uni.request({
+			url: BASE_URL + url,
+			data,
+			method,
+			success: (res) => {
+				// 异常逻辑的处理
+				if (res.data.meta.status !== 200) {
+					// toast提示
+					uni.showToast({
+						title: res.data.meta.msg,
+						icon: 'none'
+					})
+					reject(res.data.meta.msg)
+				} else {
+					reslove(res.data.message)
+					// success(res.data.message);
+				}
+				
 			}
-			
-		}
+		})
 	})
 }
 
