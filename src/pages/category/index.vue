@@ -10,21 +10,51 @@
 		<view class="main_container">
 			<!-- 左侧主分类 -->
 			<view class="left_cate_container">
-				<view class="item active">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
-				<view class="item">热门推荐</view>
+				<view @tap="cateSelect(index)" :class="curIndex === index ? 'active': ''" class="item" v-for="(item, index) in category" :key="item.cat_id">{{item.cat_name}}</view>
 			</view>
 			<!-- 右侧二级分类 -->
 			<view class="right_cate_container">
-				
+				<view class="floor">
+					<view class="title">/ 电视 /</view>
+					<view class="categories_container">
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+						<view class="category">
+							<image src="/static/product_low.png"></image>
+							<view class="name">曲面电视</view>
+						</view>
+					</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -33,26 +63,41 @@
 <script>
 	/**
 	 * 需求分析
-	 * 1、布局
+	 * 1、布局 √
 	 * 2、左侧主分类列表
-	 * 	  2.1 列表需要根据API请求，并渲染
-	 * 	  2.2 列表需要实现滚动
-	 * 	  2.3 默认选择第一个分类，而且选中的分类需要显示红色
+	 * 	  2.1 列表需要根据API请求，并渲染 √
+	 * 		2.1.1 API地址 https://api-hmugo-web.itheima.net/api/public/v1/categories
+	 * 	  2.2 列表需要实现滚动 √
+	 * 	  2.3 默认选择第一个分类，而且选中的分类需要显示红色，当用户点击不同分类，需要切换激活状态 √
+	 *  	思路：在data中定义一个名为curIndex的变量，记录用户当前点击的位置
+	 * 		思路：定义一个方法叫cateSelect(index)，用于记录用户点击的分类索引
 	 * 	  2.4 点击切换分类后，右侧二级分类需要显示对应数据
 	 * 3、右侧二级分类
+	 *   3 布局 √
 	 * 	 3.1 当左侧选择主分类后，二级分类显示数据列表
 	 *   3.2 当点击具体类目时，需要跳转到相应链接（页面间数据的传递）
 	 *   3.3 页面需要滚动
 	 */
+	import http from '@/utils/http.js';
 	export default {
 		data() {
 			return {
+				category: [], // 分类数据
+				curIndex: 0
 			}
 		},
 		onLoad() {
+			this.fetchCategory();
 		},
 		methods: {
-
+			// 获取分类数据
+			async fetchCategory() {
+				this.category = await http.get('/categories');
+			},
+			// 记录用户选择一级分类
+			cateSelect(index) {
+				this.curIndex = index;
+			}
 		}
 	}
 </script>
@@ -83,10 +128,12 @@
 	// 100 vh 表示一屏的高度， 100vw 表示一屏宽度
 	// 样式的运算 calc(100vh - 100rpx) 表示减去搜索栏高度
 	height: calc(100vh - 100rpx);
+	display: flex;
 	.left_cate_container {
 		width: 182rpx;
 		height: 100%;
 		background-color: #F3F3F3;
+		overflow: scroll;
 		.item {
 			height: 80rpx;
 			display: flex;
@@ -108,6 +155,39 @@
 			width: 4rpx;
 			height: 43rpx;
 			background-color: #EA4350;
+		}
+	}
+	.right_cate_container {
+		flex: 1;
+		.floor {
+			margin: 18rpx 0;
+			.title {
+				font-size: 28rpx;
+				color: #575757;
+				text-align: center;
+				font-weight: bold;
+				margin-bottom: 30rpx;
+			}
+			.categories_container {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-around;
+				.category {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					margin-bottom: 30rpx;
+					.name {
+						font-size: 24rpx;
+						color:#2E2E2E;
+						font-weight: 500;
+					}
+					image {
+						width:150rpx;
+						height: 150rpx;
+					}
+				}
+			}
 		}
 	}
 }
