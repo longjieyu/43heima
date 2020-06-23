@@ -17,7 +17,7 @@
 				<view class="floor" v-for="item in category[curIndex].children">
 					<view class="title">/ {{item.cat_name}} /</view>
 					<view class="categories_container">
-						<view class="category" v-for="cate in item.children">
+						<view class="category" v-for="cate in item.children" @tap="jumpToProductList(cate.cat_id)">
 							<image :src="cate.cat_icon"></image>
 							<view class="name">{{cate.cat_name}}</view>
 						</view>
@@ -44,7 +44,9 @@
 	 * 3、右侧二级分类
 	 *   3 布局 √
 	 * 	 3.1 当左侧选择主分类后，二级分类显示数据列表 √
-	 *   3.2 当点击具体类目时，需要跳转到相应链接（页面间数据的传递）
+	 *   3.2 当点击具体类目时，需要跳转到相应链接（页面间数据的传递）√
+	 * 		关键：参数在跳转URL通过?拼接，例如 /pages/goods_list/index?cid=1
+	 * 			 在目标页面通过onLoad接收，接收到的是一个对象，{ cid: 1}
 	 *   3.3 页面需要滚动 √
 	 */
 	import http from '@/utils/http.js';
@@ -66,6 +68,13 @@
 			// 记录用户选择一级分类
 			cateSelect(index) {
 				this.curIndex = index;
+			},
+			// 跳转到商品列表
+			jumpToProductList(cat_id) {
+				// 传递参数给商品分类页 router.push('/pages/goods_list/index?cid=1')
+				uni.navigateTo({
+					url: '/pages/goods_list/index?cat_id=' + cat_id
+				})
 			}
 		}
 	}
@@ -129,6 +138,7 @@
 	.right_cate_container {
 		flex: 1;
 		overflow: scroll;
+		padding: 0 48rpx;
 		.floor {
 			margin: 18rpx 0;
 			.title {
@@ -141,7 +151,7 @@
 			.categories_container {
 				display: flex;
 				flex-wrap: wrap;
-				justify-content: space-around;
+				justify-content: space-between;
 				.category {
 					display: flex;
 					flex-direction: column;
@@ -153,8 +163,8 @@
 						font-weight: 500;
 					}
 					image {
-						width:150rpx;
-						height: 150rpx;
+						width:120rpx;
+						height: 120rpx;
 					}
 				}
 			}

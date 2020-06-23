@@ -8,8 +8,8 @@
 			return {
 			}
 		},
-		onLoad() {
-
+		onLoad(options) {
+			console.log(options) // {cat_id: "5"}
 		},
 		methods: {
 
