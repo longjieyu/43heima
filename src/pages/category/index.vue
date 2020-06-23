@@ -10,33 +10,17 @@
 		<view class="main_container">
 			<!-- 左侧主分类 -->
 			<view class="left_cate_container">
-				<view class="item active">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
-				<view class="item">
-					<view class="title">热门推荐</view>
-				</view>
+				<view class="item active">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
+				<view class="item">热门推荐</view>
 			</view>
 			<!-- 右侧二级分类 -->
 			<view class="right_cate_container">
@@ -105,20 +89,25 @@
 		background-color: #F3F3F3;
 		.item {
 			height: 80rpx;
-			padding: 10rpx 0;
-			.title {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				font-size: 28rpx;
-				color: #585858;
-				height: 60rpx;
-			}
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 28rpx;
+			color: #585858;
 		}
-		.item.active .title{
-			color: #EA4350;
+		.item.active {
+			position: relative;
 			font-weight: 550;
-			border-left: 4rpx solid #EA4350;
+			color: #EA4350;
+		}
+		.item.active::before{
+			content: '';
+			position: absolute;
+			top: 20rpx;
+			left: 0;
+			width: 4rpx;
+			height: 43rpx;
+			background-color: #EA4350;
 		}
 	}
 }
