@@ -14,44 +14,12 @@
 			</view>
 			<!-- 右侧二级分类 -->
 			<view class="right_cate_container">
-				<view class="floor">
-					<view class="title">/ 电视 /</view>
+				<view class="floor" v-for="item in category[curIndex].children">
+					<view class="title">/ {{item.cat_name}} /</view>
 					<view class="categories_container">
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
-						</view>
-						<view class="category">
-							<image src="/static/product_low.png"></image>
-							<view class="name">曲面电视</view>
+						<view class="category" v-for="cate in item.children">
+							<image :src="cate.cat_icon"></image>
+							<view class="name">{{cate.cat_name}}</view>
 						</view>
 					</view>
 				</view>
@@ -71,12 +39,13 @@
 	 * 	  2.3 默认选择第一个分类，而且选中的分类需要显示红色，当用户点击不同分类，需要切换激活状态 √
 	 *  	思路：在data中定义一个名为curIndex的变量，记录用户当前点击的位置
 	 * 		思路：定义一个方法叫cateSelect(index)，用于记录用户点击的分类索引
-	 * 	  2.4 点击切换分类后，右侧二级分类需要显示对应数据
+	 * 	  2.4 点击切换分类后，右侧二级分类需要显示对应数据 √
+	 *  	思路：category[curIndex] 获取到当前选择分类下的二级分类数据
 	 * 3、右侧二级分类
 	 *   3 布局 √
-	 * 	 3.1 当左侧选择主分类后，二级分类显示数据列表
+	 * 	 3.1 当左侧选择主分类后，二级分类显示数据列表 √
 	 *   3.2 当点击具体类目时，需要跳转到相应链接（页面间数据的传递）
-	 *   3.3 页面需要滚动
+	 *   3.3 页面需要滚动 √
 	 */
 	import http from '@/utils/http.js';
 	export default {
@@ -159,6 +128,7 @@
 	}
 	.right_cate_container {
 		flex: 1;
+		overflow: scroll;
 		.floor {
 			margin: 18rpx 0;
 			.title {
