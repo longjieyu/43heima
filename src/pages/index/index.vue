@@ -1,11 +1,7 @@
 <template>
 	<view class="container">
 		<!-- 搜索栏 -->
-		<view class="search_container">
-			<view class="search_input" @tap="jumpToSearchPage">
-				<text class="search_text">搜索</text>
-			</view>
-		</view>
+		<SearchInput/>
 		<!-- 首页轮播图 -->
 		<view class="banner_container">
 			<swiper indicator-active-color="#EA4350" :autoplay="true" :circular="true" :indicator-dots="true">
@@ -82,6 +78,7 @@
  * 	 await Promise()
  */
 import http from '@/utils/http.js';
+import SearchInput from '@/components/SearchInput.vue';
 
 export default {
   data() {
@@ -110,14 +107,10 @@ export default {
   mounted() {
 	  console.log('mounted')
   },
+  components: {
+	SearchInput  
+  },
   methods: {
-	  // 跳转到搜索页
-	  jumpToSearchPage() {
-		// 调用跳转API
-		uni.navigateTo({
-			url: '/pages/search/index'
-		})
-	  },
 	  jumpToNavPage(url, open_type) {
 		  if (open_type === 'switchTab') {
 			  uni.switchTab({
@@ -229,27 +222,6 @@ export default {
 </script>
 
 <style lang="less">
-.search_container {
-	background: #EA4350;
-	width: 100%;
-	height: 100rpx;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	.search_input {
-		width: 700rpx;
-		height: 80rpx;
-		background: #fff;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border-radius: 5rpx;
-		.search_text {
-			font-size: 32rpx;
-			color:#767676;
-		}
-	}
-}
 .banner_container {
 	width: 100%;
 	height: 340rpx;

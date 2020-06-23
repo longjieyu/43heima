@@ -1,11 +1,7 @@
 <template>
 	<view class="cate_container">
 		<!-- 搜索栏 -->
-		<view class="search_container">
-			<view class="search_input" @tap="jumpToSearchPage">
-				<text class="search_text">搜索</text>
-			</view>
-		</view>
+		<SearchInput/>
 		<!-- 分类 -->
 		<view class="main_container">
 			<!-- 左侧主分类 -->
@@ -14,10 +10,10 @@
 			</view>
 			<!-- 右侧二级分类 -->
 			<view class="right_cate_container">
-				<view class="floor" v-for="item in category[curIndex].children">
+				<view class="floor" v-for="item in category[curIndex].children" :key="item.cat_id">
 					<view class="title">/ {{item.cat_name}} /</view>
 					<view class="categories_container">
-						<view class="category" v-for="cate in item.children" @tap="jumpToProductList(cate.cat_id)">
+						<view class="category" v-for="cate in item.children" @tap="jumpToProductList(cate.cat_id)" :key="cate.cat_id">
 							<image :src="cate.cat_icon"></image>
 							<view class="name">{{cate.cat_name}}</view>
 						</view>
@@ -50,6 +46,7 @@
 	 *   3.3 页面需要滚动 √
 	 */
 	import http from '@/utils/http.js';
+	import SearchInput from '@/components/SearchInput.vue';
 	export default {
 		data() {
 			return {
@@ -59,6 +56,9 @@
 		},
 		onLoad() {
 			this.fetchCategory();
+		},
+		components: {
+			SearchInput
 		},
 		methods: {
 			// 获取分类数据
@@ -81,27 +81,6 @@
 </script>
 
 <style lang="less">
-.search_container {
-	background: #EA4350;
-	width: 100%;
-	height: 100rpx;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	.search_input {
-		width: 700rpx;
-		height: 80rpx;
-		background: #fff;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border-radius: 5rpx;
-		.search_text {
-			font-size: 32rpx;
-			color:#767676;
-		}
-	}
-}
 .main_container {
 	// 100 vh 表示一屏的高度， 100vw 表示一屏宽度
 	// 样式的运算 calc(100vh - 100rpx) 表示减去搜索栏高度
